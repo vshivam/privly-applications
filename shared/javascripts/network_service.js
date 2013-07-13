@@ -55,6 +55,10 @@ var privlyNetworkService = {
     }
 
     if (setCSRF) {
+      if (privlyNetworkService.platformName() === "ANDROID") {
+        androidJsBridge.showWaitDialog();
+      }
+      
       $.ajax({
         url: csrfTokenAddress,
         dataType: "json",

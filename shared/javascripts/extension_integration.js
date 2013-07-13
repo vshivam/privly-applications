@@ -19,6 +19,10 @@ var privlyExtension = {
    *
    */
   firePrivlyURLEvent: function(url) {
+    if (privlyNetworkService.platformName() === "ANDROID") {
+      androidJsBridge.hideWaitDialog();
+    }
+    
     var element = document.createElement("privlyEventSender");  
     element.setAttribute("privlyUrl", url);  
     document.documentElement.appendChild(element);  

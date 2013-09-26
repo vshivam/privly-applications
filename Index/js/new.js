@@ -57,9 +57,11 @@ var callbacks = {
       $('#loadingDiv').hide(); 
     });
     
-    privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
-                                            callbacks.loginFailure, 
-                                            callbacks.loginFailure);
+    privlyNetworkService.initPrivlyService(
+      privlyNetworkService.contentServerDomain(),
+      callbacks.pendingPost, 
+      callbacks.loginFailure, 
+      callbacks.loginFailure);
   },
   
   /**
@@ -67,10 +69,9 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
-    var message = "We were unable to sign you into your content server please " + 
-                  "<a href='" + privlyNetworkService.contentServerDomain() + "/users/sign_in' target='_blank'>sign in</a> to " +
-                  "<a href=''>continue</a>";
-    $("#messages").html(message);
+    var message = "You are not currently signed into your content server. " + 
+      "Please login then refresh the page.";
+    $("#messages").text(message);
   },
   
   /**
@@ -154,16 +155,13 @@ var callbacks = {
       
     }
     
-    var dataTable = $('#posts').dataTable();
+    dataTable = $('#posts').dataTable({"bPaginate": false});
     
     // Hide the markdown column after initialisation
     dataTable.fnSetColumnVis( 5, false );
     
     $('body').on('click', 'a.view_link', function() {
       
-      $('#table_col').removeClass('col-lg-12');
-      $('#iframe_col').addClass('col-lg-4');
-      $('#table_col').addClass('col-lg-8');
       $('#iframe_col').css('display', 'inherit');
       
       var app = $(this).attr("data-privly-app-name");
@@ -257,7 +255,8 @@ var messaging = {
  * @param {message} e The message posted by an iframe. 
  */
 function resizeIframePostedMessage(e) {
-  if(e.origin == window.location.origin) {
+  if(e.origin == window.location.origin && 
+    document.getElementById("ifrm0") !== null) {
     document.getElementById("ifrm0").style.height = e.data.split(",")[1] + "px";
   }
 }
